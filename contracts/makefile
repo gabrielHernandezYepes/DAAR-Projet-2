@@ -1,1 +1,2 @@
-cd ~/projects/M2/DAAR/PROJET2/collectible-card-game-daar
+npx hardhat clean
+npx hardhat compile

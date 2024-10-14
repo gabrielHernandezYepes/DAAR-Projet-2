@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -17,7 +17,7 @@ contract NFTCollection is ERC721, Ownable {
     // Compteur pour les tokenIds
     uint private _currentTokenId = 0;
 
-    constructor() ERC721("MyNFTCollection", "MNFT") {}
+    constructor() Ownable(msg.sender) ERC721("MyNFTCollection", "MNFT") {}
 
     // Fonction pour frapper une carte
     function mintCard(
@@ -43,8 +43,8 @@ contract NFTCollection is ERC721, Ownable {
     }
 
     // Surcharge de la fonction tokenURI pour retourner l'URI correcte
-    function tokenURI(uint tokenId) public view override returns (string memory) {
-        require(_exists(tokenId), "Token does not exist");
-        return cardInfos[tokenId].tokenURI;
-    }
+    // function tokenURI(uint tokenId) public view override returns (string memory) {
+    //     require(_exists(tokenId), "Token does not exist");
+    //     return cardInfos[tokenId].tokenURI;
+    // }
 }
