@@ -17,8 +17,7 @@ contract NFTCollection is ERC721, Ownable {
     // Compteur pour les tokenIds
     uint private _currentTokenId = 0;
 
-    constructor() Ownable(msg.sender) ERC721("MyNFTCollection", "MNFT") {}
-
+  constructor(address ownerAddress) ERC721("MyNFTCollection", "MNFT") Ownable(ownerAddress) {}
     // Fonction pour frapper une carte
     function mintCard(
         address to,

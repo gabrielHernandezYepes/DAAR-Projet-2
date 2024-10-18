@@ -15,42 +15,42 @@ export const useCollections = (contract: Main | undefined) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!contract) return
+  // useEffect(() => {
+  //   if (!contract) return
 
-    const fetchCollections = async () => {
-      setLoading(true)
-      try {
-        const collectionsCount = await contract.getCollectionsCount()
-        const tempCollections: Collection[] = []
-        for (let i = 0; i < collectionsCount; i++) {
-          const collectionAddress = await contract.getCollection(i)
-          const collectionContract = new ethers.Contract(
-            collectionAddress,
-            CollectionABI,
-            contract.provider
-          )
-          const name = await collectionContract.collectionName()
-          const cardCount = await collectionContract.cardCount()
+  //   // const fetchCollections = async () => {
+  //   //   setLoading(true)
+  //   //   try {
+  //   //     const collectionsCount = await contract.getCollectionsCount()
+  //   //     const tempCollections: Collection[] = []
+  //   //     for (let i = 0; i < collectionsCount; i++) {
+  //   //       const collectionAddress = await contract.getCollection(i)
+  //   //       const collectionContract = new ethers.Contract(
+  //   //         collectionAddress,
+  //   //         CollectionABI,
+  //   //         contract.provider
+  //   //       )
+  //   //       const name = await collectionContract.collectionName()
+  //   //       const cardCount = await collectionContract.cardCount()
 
-          tempCollections.push({
-            index: i,
-            address: collectionAddress,
-            name,
-            cardCount: Number(cardCount),
-          })
-        }
-        setCollections(tempCollections)
-        setLoading(false)
-      } catch (err: any) {
-        console.error(err)
-        setError(err.message)
-        setLoading(false)
-      }
-    }
+  //   //       tempCollections.push({
+  //   //         index: i,
+  //   //         address: collectionAddress,
+  //   //         name,
+  //   //         cardCount: Number(cardCount),
+  //   //       })
+  //   //     }
+  //   //     setCollections(tempCollections)
+  //   //     setLoading(false)
+  //     } catch (err: any) {
+  //       console.error(err)
+  //       setError(err.message)
+  //       setLoading(false)
+  //     }
+  //   }
 
-    fetchCollections()
-  }, [contract])
+  //   fetchCollections()
+  // }, [contract])
 
-  return { collections, loading, error }
+  // return { collections, loading, error }
 }

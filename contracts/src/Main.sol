@@ -17,8 +17,17 @@ contract Main is Ownable {
 
     event CardMinted(uint collectionId, address to, uint cardNumber, string tokenURI);
 
-    constructor() Ownable(msg.sender) {
+    constructor(address _owner) Ownable(msg.sender) {
+        require(_owner != address(0), "Owner address cannot be zero");
+        transferOwnership(_owner);
         nftContract = NFTCollection(msg.sender);
+    }
+
+
+    // Add the override specifier here
+    function transferOwnership(address newOwner) public override onlyOwner {
+        require(newOwner != address(0), "New owner is the zero address");
+        _transferOwnership(newOwner);
     }
 
     function createCollection(string calldata name, uint cardCount) external onlyOwner {
