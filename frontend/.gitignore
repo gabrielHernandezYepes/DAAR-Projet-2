@@ -24,3 +24,6 @@ src/contracts.json
 *.njsproj
 *.sln
 *.sw?
+
+# API keys and other secrets
+.env

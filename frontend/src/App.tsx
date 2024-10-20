@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import MainABI from './abis/Main.json'; // Ensure the path is correct
 import { MintCardsForm } from './components/MintCardsForm'; 
 import { CreateCollectForm } from './components/CreateCollectForm'; 
+import { GetSet } from './components/GetSet';
 
 // Replace with your deployed contract address from Hardhat deployment logs
 const contractAddress = "0x7751483EAe19d423C390632Dc2e0cABcd2d42054";
@@ -110,7 +111,7 @@ export const App = () => {
 
       {/* Integration of minting and collection creation forms */}
       {contract && <MintCardsForm contract={contract} />}
-      {contract && <CreateCollectForm contract={contract} />}
+      {contract && <GetSet  />}
     </div>
   );
 };
