@@ -1,56 +1,50 @@
-import { useEffect, useState } from 'react'
-import { Main } from '../lib/main'
-import { ethers } from 'ethers'
-import CollectionABI from '../abis/NFTCollection.json'
+import { useEffect, useState, useCallback } from 'react';
+import { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 export type Collection = {
-  index: number
-  address: string
-  name: string
-  cardCount: number
-}
+  collectionId: number;
+  name: string;
+  cardCount: number;
+};
 
-export const useCollections = (contract: Main | undefined) => {
-  const [collections, setCollections] = useState<Collection[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+export const useCollections = (mainContract: ethers.Contract | undefined) => {
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   if (!contract) return
+  const fetchCollections = useCallback(async () => {
+    if (!mainContract) return;
 
-  //   // const fetchCollections = async () => {
-  //   //   setLoading(true)
-  //   //   try {
-  //   //     const collectionsCount = await contract.getCollectionsCount()
-  //   //     const tempCollections: Collection[] = []
-  //   //     for (let i = 0; i < collectionsCount; i++) {
-  //   //       const collectionAddress = await contract.getCollection(i)
-  //   //       const collectionContract = new ethers.Contract(
-  //   //         collectionAddress,
-  //   //         CollectionABI,
-  //   //         contract.provider
-  //   //       )
-  //   //       const name = await collectionContract.collectionName()
-  //   //       const cardCount = await collectionContract.cardCount()
+    setLoading(true);
+    try {
+      const nextCollectionId: BigNumber = await mainContract.nextCollectionId();
+      const totalCollections = nextCollectionId.toNumber();
 
-  //   //       tempCollections.push({
-  //   //         index: i,
-  //   //         address: collectionAddress,
-  //   //         name,
-  //   //         cardCount: Number(cardCount),
-  //   //       })
-  //   //     }
-  //   //     setCollections(tempCollections)
-  //   //     setLoading(false)
-  //     } catch (err: any) {
-  //       console.error(err)
-  //       setError(err.message)
-  //       setLoading(false)
-  //     }
-  //   }
+      const tempCollections: Collection[] = [];
 
-  //   fetchCollections()
-  // }, [contract])
+      for (let i = 0; i < totalCollections; i++) {
+        const collectionData = await mainContract.collections(i);
+        const collection: Collection = {
+          collectionId: i,
+          name: collectionData.name,
+          cardCount: collectionData.cardCount.toNumber(),
+        };
+        tempCollections.push(collection);
+      }
 
-  // return { collections, loading, error }
-}
+      setCollections(tempCollections);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [mainContract]);
+
+  useEffect(() => {
+    fetchCollections();
+  }, [fetchCollections]);
+
+  return { collections, loading, error, fetchCollections };
+};
