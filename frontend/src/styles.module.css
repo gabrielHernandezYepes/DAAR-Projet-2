@@ -4,6 +4,8 @@
 
 body {
   margin: 0;
+  background-color: #1a1a2e;
+  color: #fff; 
 }
 
 .body {
@@ -22,4 +24,44 @@ body {
 
 .cell {
   background: #ddd;
+}
+
+/* Boutons stylisés avec un dégradé de couleurs */
+button {
+  background: linear-gradient(90deg, #ff7e5f, #feb47b); /* Dégradé de couleurs */
+  border: none;
+  border-radius: 12px; /* Coins arrondis */
+  color: white;
+  padding: 10px 20px; /* Taille du bouton */
+  font-size: 16px; /* Taille du texte */
+  cursor: pointer;
+  transition: background 0.3s ease; /* Animation douce */
+}
+
+/* Effet de survol */
+button:hover {
+  background: linear-gradient(90deg, #feb47b, #ff7e5f); /* Inverse le dégradé */
+  transform: scale(1.05); /* Agrandissement léger au survol */
+}
+
+/* Style du bouton pour le shop avec un dégradé */
+.shopButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(90deg, #43cea2, #185a9d); /* Dégradé spécifique pour le shop */
+  border: none;
+  border-radius: 12px;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.shopButton:hover {
+  transform: scale(1.1); /* Agrandissement du bouton au survol */
+}
+
+.shopIcon {
+  width: 40px;
+  height: 40px;
 }
