@@ -1,0 +1,102 @@
+[33mcommit 8d7a03faef0f3033ae9c879464eeaba1cdb505c2[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/First-onchain-part[m[33m)[m
+Author: Eelavan <eelavan.ravikumar@gmail.com>
+Date:   Tue Oct 22 22:38:40 2024 +0200
+
+    Description des modifications
+
+[33mcommit 82d99cb14af2f4f63930d055ac22505851e7afb3[m
+Author: gabrielHernandezYepes <gabi92102@gmail.com>
+Date:   Sun Oct 20 02:33:52 2024 +0200
+
+    appel à l'api réussi
+
+[33mcommit 2c3768e3153f491a550abd3478ab379435db1eef[m
+Author: gabrielHernandezYepes <gabi92102@gmail.com>
+Date:   Fri Oct 18 19:09:41 2024 +0200
+
+    create fonctionne
+
+[33mcommit ce778bacbd38733e357b1f4f607a3a1c63537864[m
+Author: gabrielHernandezYepes <gabi92102@gmail.com>
+Date:   Mon Oct 14 09:45:45 2024 +0200
+
+    First offchain part
+
+[33mcommit a9fc5e52bceb4c646a9883dbe3df297ab28f400a[m
+Author: gabrielHernandezYepes <gabi92102@gmail.com>
+Date:   Sat Oct 12 17:48:33 2024 +0200
+
+    First onchain part- Draft
+
+[33mcommit 425399fd9f7cf05cb5e23b9686421223b530b559[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Mon Oct 7 11:56:19 2024 +0200
+
+    Add cross-env
+
+[33mcommit fa88ce91e5323c42bc2e0bd64ddcf60f511a7745[m
+Merge: 5a4a436 b88401d
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Thu Nov 2 18:02:58 2023 +0100
+
+    Merge pull request #6 from RootLeo00/dev-veryoldhardhatversion
+    
+    Add openzeppelin and update hardhat
+
+[33mcommit b88401d9173b7879d11b4648a015dc435541c0ee[m
+Author: ubombar <ufukbombar@gmail.com>
+Date:   Wed Nov 1 22:11:46 2023 +0100
+
+    Change hardhat config solidity version to 0.8.20
+
+[33mcommit b2bf2df10ec7b6208edae81e1e0a22679dd4061c[m
+Author: ubombar <ufukbombar@gmail.com>
+Date:   Wed Nov 1 22:10:22 2023 +0100
+
+    Add openzeppelin and update hardhat
+
+[33mcommit 5a4a4365442090bc12b05838532da673194ee2a6[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Fri Oct 13 23:37:45 2023 +0200
+
+    Add second course to Readme
+    
+    Signed-off-by: Guillaume Hivert <hivert.is.coming@gmail.com>
+
+[33mcommit 1164898b20a4fef5e679205a2c21d98fb54d417e[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Wed Oct 11 14:25:46 2023 +0200
+
+    Update subject
+    
+    Signed-off-by: Guillaume Hivert <hivert.is.coming@gmail.com>
+
+[33mcommit 47f60ed5ee447364b24adb01e13c2a4f97b48562[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Mon Oct 9 01:18:14 2023 +0200
+
+    Add first slideshow
+    
+    Signed-off-by: Guillaume Hivert <hivert.is.coming@gmail.com>
+
+[33mcommit f043ccb4aef07879fcb6e6846ddf130a81a3b61f[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Mon Oct 9 00:59:57 2023 +0200
+
+    Readme to implement
+    
+    Signed-off-by: Guillaume Hivert <hivert.is.coming@gmail.com>
+
+[33mcommit 18abffe9970126ecbb5ac2da2eefff3c8ca0af59[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Mon Oct 9 00:24:23 2023 +0200
+
+    git ci -m 'Working project'
+    
+    Signed-off-by: Guillaume Hivert <hivert.is.coming@gmail.com>
+
+[33mcommit 72a3962e79c6b8952bb09c82b182f557701f7cb8[m
+Author: Guillaume Hivert <hivert.is.coming@gmail.com>
+Date:   Mon Sep 25 12:17:40 2023 +0200
+
+    First commit

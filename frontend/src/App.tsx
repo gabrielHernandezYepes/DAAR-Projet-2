@@ -1,89 +1,87 @@
-import { useEffect, useState } from 'react';
+// src/App.tsx
+
+import React, { useEffect, useState } from 'react';
 import { useWallet } from './hooks/useWallet';
 import styles from './styles.module.css';
 import { ethers } from 'ethers';
-import MainABI from './abis/Main.json'; // Ensure the path is correct
-import { MintCardsForm } from './components/MintCardsForm'; 
-import { CreateCollectForm } from './components/CreateCollectForm'; 
-import { GetSet } from './components/GetSet';
+import MainABI from './abis/Main.json'; // Assurez-vous que le chemin est correct
+import { CreateCollectForm } from './components/CreateCollectForm';
+import { MintCardsForm } from './components/MintCardsForm';
+import { TransferOwnershipForm } from './components/TransferOwnershipForm';
 
-// Replace with your deployed contract address from Hardhat deployment logs
-const contractAddress = "0x7751483EAe19d423C390632Dc2e0cABcd2d42054";
+// Importer l'image du logo
+import logo from './assets/images/logo.png'; // Vérifiez le chemin
+
+// Importer l'image d'arrière-plan
+import backgroundImage from './assets/images/charizard.jpg'; // Vérifiez le chemin si vous utilisez des styles en ligne
+
+const contractAddress = "0x7751483EAe19d423C390632Dc2e0cABcd2d42054"; // Mettez à jour si nécessaire
 
 export const App = () => {
   const wallet = useWallet();
-  const { details, contract } = wallet || {};
+  const { account, balance, contract } = wallet || {};
   const [currentOwner, setCurrentOwner] = useState<string>('');
   const { ethereum } = window;
 
-  // Request MetaMask access on component mount
+  // Initialiser le contrat et récupérer le propriétaire
   useEffect(() => {
-    const requestMetaMaskAccess = async () => {
-      if (ethereum) {
+    const initialize = async () => {
+      if (contract) {
         try {
-          await ethereum.request({ method: 'eth_requestAccounts' });
-          console.log('MetaMask access granted.');
+          const owner = await contract.owner();
+          setCurrentOwner(owner);
         } catch (error) {
-          console.error('User denied MetaMask access:', error);
+          console.error('Erreur lors de la récupération du propriétaire:', error);
         }
-      } else {
-        console.error('MetaMask is not installed!');
       }
     };
-    requestMetaMaskAccess();
-  }, [ethereum]);
+    initialize();
+  }, [contract]);
 
-  // Initialize the contract
-  const initializeContract = async () => {
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-      const network = await provider.getNetwork();
-
-      if (network.chainId === 31337 || network.name === "unknown") {
-        console.log("Connected to local Hardhat network.");
-        const contractInstance = new ethers.Contract(contractAddress, MainABI, signer);
-        return contractInstance;
-      } else {
-        console.error("Unsupported network:", network.name);
-        return null;
-      }
-    }
-    return null;
-  };
-
-
-
-  // Transfer ownership function
+  // Fonction de transfert de propriété
   const transferOwnership = async (newOwnerAddress: string) => {
-    const contractInstance = await initializeContract();
-    if (contractInstance) {
-      try {
-        // Normalize the address to prevent ENS resolution
-        const normalizedAddress = ethers.utils.getAddress(newOwnerAddress);
-        const tx = await contractInstance['transferOwnership(address)'](normalizedAddress);
-
-        console.log(`Ownership transfer transaction sent: ${tx.hash}`);
-        await tx.wait();
-        console.log(`Ownership transferred successfully to ${normalizedAddress}`);
-        setCurrentOwner(normalizedAddress); // Update state
-      } catch (error) {
-        console.error('Error during ownership transfer:', error);
-      }
+    if (!contract) return;
+    try {
+      const normalizedAddress = ethers.utils.getAddress(newOwnerAddress);
+      const tx = await contract.transferOwnership(normalizedAddress);
+      console.log(`Transfert de propriété en cours: ${tx.hash}`);
+      await tx.wait();
+      console.log(`Propriété transférée avec succès à ${normalizedAddress}`);
+      setCurrentOwner(normalizedAddress);
+    } catch (error: any) {
+      console.error('Erreur lors du transfert de propriété:', error);
+      throw error; // Relancer l'erreur pour la gestion dans le formulaire
     }
   };
 
-  // Example ownership transfer handler
-  const handleTransferOwnership = async () => {
-    const newOwner: string = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; 
-    await transferOwnership(newOwner);
-  };
+  // Gestion des changements de comptes MetaMask
+  useEffect(() => {
+    if (ethereum) {
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length > 0) {
+          console.log('Compte changé:', accounts[0]);
+          // Mettre à jour l'état ou rafraîchir les détails du contrat si nécessaire
+        } else {
+          console.log('Veuillez connecter un compte.');
+        }
+      };
+
+      ethereum.on('accountsChanged', handleAccountsChanged);
+
+      // Nettoyage lors du démontage du composant
+      return () => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        }
+      };
+    }
+  }, [ethereum]);
 
   if (!ethereum) {
     return (
       <div className={styles.body}>
-        <h1>Welcome to Pokémon TCG</h1>
-        <p>Please install MetaMask.</p>
+        <h1>Bienvenue dans Pokémon TCG</h1>
+        <p>Veuillez installer MetaMask.</p>
       </div>
     );
   }
@@ -91,29 +89,27 @@ export const App = () => {
   if (!wallet) {
     return (
       <div className={styles.body}>
-        <h1>Welcome to Pokémon TCG</h1>
-        <p>Please connect your wallet.</p>
+        <h1>Bienvenue dans Pokémon TCG</h1>
+        <p>Veuillez connecter votre portefeuille.</p>
       </div>
     );
   }
 
   return (
-    <div className={styles.body}>
-      <h1>Welcome to Pokémon TCG</h1>
-      
-      {/* Display the current contract owner */}
-      <p>Current Contract Owner: {currentOwner ? currentOwner : 'Loading...'}</p>
-      
-      {/* Button to transfer ownership */}
-      <button onClick={handleTransferOwnership}>
-        Transfer Ownership to Your Address
-      </button>
+    <div 
+      className={`${styles.body} ${styles.background}`} 
+      style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className={styles.buttons}>
+         <img src={logo} alt="Logo Pokémon TCG" className={styles.logo} />
+        <button>Home</button>
+        <button>Sets</button>
+        <button>Users</button>
+        <button>Boosters</button>
+      </div>
+      <h1>Bienvenue dans Pokémon TCG</h1>
 
-      {/* Integration of minting and collection creation forms */}
-      {contract && <MintCardsForm contract={contract} />}
-      {contract && <GetSet  />}
     </div>
   );
-};
+}
 
 export default App;

@@ -1,4 +1,5 @@
 // src/hooks/useWallet.ts
+
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as ethereum from '../lib/ethereum'
 import * as main from '../lib/main'
@@ -25,8 +26,9 @@ const useAffect = (
 }
 
 export const useWallet = () => {
-  const [details, setDetails] = useState<ethereum.Details>()
-  const [contract, setContract] = useState<Main>()
+  const [details, setDetails] = useState<ethereum.Details | null>(null)
+  const [contract, setContract] = useState<Main | null>(null)
+
   useAffect(async () => {
     const details_ = await ethereum.connect('metamask')
     if (!details_) return
@@ -35,8 +37,13 @@ export const useWallet = () => {
     if (!contract_) return
     setContract(contract_)
   }, [])
+
   return useMemo(() => {
-    if (!details || !contract) return
-    return { details, contract }
+    if (!details || !contract) return null
+    return {
+      account: details.account,
+      balance: details.balance,
+      contract,
+    }
   }, [details, contract])
 }
