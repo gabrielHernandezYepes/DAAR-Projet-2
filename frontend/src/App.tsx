@@ -7,6 +7,7 @@ import { CreateCollectForm } from './components/CreateCollectForm';
 import { MintCardsForm } from './components/MintCardsForm';
 import { TransferOwnershipForm } from './components/TransferOwnershipForm';
 import SetsComponent from './components/SetsComponent'; // Importer le composant SetsComponent
+import CardsComponent from './components/CardsComponent'; // Assurez-vous que le chemin est correct
 
 // Importer l'image du logo
 import logo from './assets/images/logo.png'; // Vérifiez le chemin
@@ -21,8 +22,9 @@ export const App = () => {
   const { account, balance, contract } = wallet || {};
   const [currentOwner, setCurrentOwner] = useState<string>('');
   const { ethereum } = window;
-  
+
   const [showSets, setShowSets] = useState(false); // État pour afficher ou non les sets
+  const [selectedSet, setSelectedSet] = useState(null);
 
   // Initialiser le contrat et récupérer le propriétaire
   useEffect(() => {
@@ -38,45 +40,6 @@ export const App = () => {
     };
     initialize();
   }, [contract]);
-
-  // Fonction de transfert de propriété
-  const transferOwnership = async (newOwnerAddress: string) => {
-    if (!contract) return;
-    try {
-      const normalizedAddress = ethers.utils.getAddress(newOwnerAddress);
-      const tx = await contract.transferOwnership(normalizedAddress);
-      console.log(`Transfert de propriété en cours: ${tx.hash}`);
-      await tx.wait();
-      console.log(`Propriété transférée avec succès à ${normalizedAddress}`);
-      setCurrentOwner(normalizedAddress);
-    } catch (error: any) {
-      console.error('Erreur lors du transfert de propriété:', error);
-      throw error; // Relancer l'erreur pour la gestion dans le formulaire
-    }
-  };
-
-  // Gestion des changements de comptes MetaMask
-  useEffect(() => {
-    if (ethereum) {
-      const handleAccountsChanged = (accounts: string[]) => {
-        if (accounts.length > 0) {
-          console.log('Compte changé:', accounts[0]);
-          // Mettre à jour l'état ou rafraîchir les détails du contrat si nécessaire
-        } else {
-          console.log('Veuillez connecter un compte.');
-        }
-      };
-
-      ethereum.on('accountsChanged', handleAccountsChanged);
-
-      // Nettoyage lors du démontage du composant
-      return () => {
-        if (ethereum.removeListener) {
-          ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        }
-      };
-    }
-  }, [ethereum]);
 
   if (!ethereum) {
     return (
@@ -111,6 +74,15 @@ export const App = () => {
 
       {/* Afficher les sets si showSets est vrai */}
       {showSets && <SetsComponent />}
+      
+      {/* Si un set est sélectionné, afficher les cartes du set */}
+      {selectedSet && (
+        <CardsComponent
+          setId={selectedSet.id}
+          setName={selectedSet.name}
+          contract={contract} // Passer le contrat pour permettre le mint
+        />
+      )}
     </div>
   );
 }

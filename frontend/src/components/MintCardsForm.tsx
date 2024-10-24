@@ -1,76 +1,72 @@
 import React, { useState } from 'react';
-import { Main } from '../lib/main';
+import { ethers } from 'ethers';
 
-type Props = {
-  contract: Main;
-};
+interface MintCardsFormProps {
+  contract: ethers.Contract; // Le contrat principal pour mint
+  collectionId: number; // ID de la collection
+  onMintSuccess?: (message: string) => void; // Callback en cas de succès
+}
 
-export const MintCardsForm: React.FC<Props> = ({ contract }) => {
-  const [collectionId, setCollectionId] = useState<number>(0);
-  const [address, setAddress] = useState<string>('');
-  const [cardNumbers, setCardNumbers] = useState<string>(''); // String à parser en tableau
-  const [tokenURIs, setTokenURIs] = useState<string>(''); // String à parser en tableau
-  const [minting, setMinting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+const MintCardsForm: React.FC<MintCardsFormProps> = ({ contract, collectionId, onMintSuccess }) => {
+  const [recipientAddress, setRecipientAddress] = useState<string>(''); // L'adresse du destinataire
+  const [cardNumber, setCardNumber] = useState<number>(1); // Le numéro de la carte
+  const [tokenURI, setTokenURI] = useState<string>(''); // Le token URI pour la carte
+  const [minting, setMinting] = useState<boolean>(false); // L'état du processus de mint
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Gestion des erreurs
 
-  const handleMint = async () => {
-    setMinting(true);
-    setError(null);
-
+  // Fonction pour mint les cartes
+  const handleMintCards = async () => {
+    if (!contract || !recipientAddress || !tokenURI) return;
+    setMinting(true); // Indiquer que le mint est en cours
     try {
-      // Convertir les chaînes de texte en tableaux
-      const cardNumbersArray = cardNumbers.split(',').map((num) => parseInt(num.trim(), 10));
-      const tokenURIsArray = tokenURIs.split(',').map((uri) => uri.trim());
-
-      // Appeler la fonction `mintCardsToUser` du contrat
-      const tx = await contract.mintCardsToUser(collectionId, address, cardNumbersArray, tokenURIsArray);
-      await tx.wait(); // Attendre la confirmation de la transaction
-
-      alert('Minting réussi!');
-    } catch (err: any) {
-      console.error(err);
-      setError('Une erreur est survenue pendant le minting.');
+      const tx = await contract.mintCard(recipientAddress, collectionId, cardNumber, tokenURI);
+      await tx.wait();
+      onMintSuccess && onMintSuccess(`Carte ${cardNumber} mintée avec succès pour ${recipientAddress}`);
+      setErrorMessage(null); // Réinitialiser l'erreur
+    } catch (error: any) {
+      setErrorMessage(`Erreur : ${error.message}`);
     } finally {
-      setMinting(false);
+      setMinting(false); // Le mint est terminé
     }
   };
 
   return (
     <div>
-      <h3>Mint des cartes</h3>
-      <label>
-        Collection ID:
+      <h2>Mint des cartes dans la collection {collectionId}</h2>
+      <div>
+        <input
+          type="text"
+          placeholder="Adresse du destinataire"
+          value={recipientAddress}
+          onChange={(e) => setRecipientAddress(e.target.value)}
+          disabled={minting}
+        />
+      </div>
+      <div>
         <input
           type="number"
-          value={collectionId}
-          onChange={(e) => setCollectionId(parseInt(e.target.value, 10))}
+          placeholder="Numéro de la carte"
+          value={cardNumber}
+          onChange={(e) => setCardNumber(Number(e.target.value))}
+          min={1}
+          disabled={minting}
         />
-      </label>
-      <label>
-        Adresse de l'utilisateur:
-        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
-      </label>
-      <label>
-        Numéros de cartes (séparés par des virgules):
+      </div>
+      <div>
         <input
           type="text"
-          value={cardNumbers}
-          onChange={(e) => setCardNumbers(e.target.value)}
+          placeholder="Token URI (lien vers l'image ou les métadonnées)"
+          value={tokenURI}
+          onChange={(e) => setTokenURI(e.target.value)}
+          disabled={minting}
         />
-      </label>
-      <label>
-        URIs des cartes (séparées par des virgules):
-        <input
-          type="text"
-          value={tokenURIs}
-          onChange={(e) => setTokenURIs(e.target.value)}
-        />
-      </label>
-      <button onClick={handleMint} disabled={minting}>
-        {minting ? 'Minting en cours...' : 'Mint Cards'}
+      </div>
+      <button onClick={handleMintCards} disabled={minting || !recipientAddress || !tokenURI}>
+        {minting ? 'Minting...' : 'Mint Carte'}
       </button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </div>
   );
 };
 
+export default MintCardsForm;

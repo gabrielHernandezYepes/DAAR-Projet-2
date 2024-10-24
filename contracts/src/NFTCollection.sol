@@ -14,17 +14,28 @@ contract NFTCollection is ERC721, Ownable {
     // Mapping de tokenId vers les informations de la carte
     mapping(uint => CardInfo) public cardInfos;
 
+    // Mapping de tokenId vers l'owner
+    mapping(uint => address) public cardToOwner;
+
+    // Mapping de owner vers la liste des cartes qu'il possède
+    mapping(address => uint[]) public ownerToCards;
+
     // Compteur pour les tokenIds
     uint private _currentTokenId = 0;
 
-  constructor(address ownerAddress) ERC721("MyNFTCollection", "MNFT") Ownable(ownerAddress) {}
+    constructor(address ownerAddress) ERC721("MyNFTCollection", "MNFT") {
+        transferOwnership(ownerAddress); // Utilisez transferOwnership pour définir le propriétaire
+    }
+
     // Fonction pour frapper une carte
     function mintCard(
         address to,
         uint collectionId,
         uint cardNumber,
         string memory tokenURI
-    ) external onlyOwner returns (uint) {
+    ) public onlyOwner returns (uint) {
+        require(!isMinted(collectionId, cardNumber), "Card already minted");
+
         _currentTokenId++;
         uint newTokenId = _currentTokenId;
 
@@ -38,12 +49,25 @@ contract NFTCollection is ERC721, Ownable {
             tokenURI: tokenURI
         });
 
+        // Mettre à jour les mappings pour suivre l'owner de la carte
+        cardToOwner[newTokenId] = to;
+        ownerToCards[to].push(newTokenId);
+
         return newTokenId;
     }
 
-    // Surcharge de la fonction tokenURI pour retourner l'URI correcte
-    // function tokenURI(uint tokenId) public view override returns (string memory) {
-    //     require(_exists(tokenId), "Token does not exist");
-    //     return cardInfos[tokenId].tokenURI;
-    // }
+    // Fonction pour vérifier si une carte est déjà mintée ou non
+    function isMinted(uint collectionId, uint cardNumber) public view returns (bool) {
+        for (uint i = 1; i <= _currentTokenId; i++) {
+            if (cardInfos[i].collectionId == collectionId && cardInfos[i].cardNumber == cardNumber) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Fonction pour récupérer toutes les cartes associées à un owner
+    function getCardsOfOwner(address owner) public view returns (uint[] memory) {
+        return ownerToCards[owner];
+    }
 }

@@ -3,7 +3,7 @@ import { usePokemonSets } from '../hooks/usePokemonSets';
 import { CardsComponent } from './CardsComponent'; // Composant qui affiche les cartes
 import styles from '../styles.module.css';
 
-const SetsComponent = () => {
+const SetsComponent = ({ onSelectCard }) => {
   const { sets, loading, error } = usePokemonSets();
   const [selectedSet, setSelectedSet] = useState(null);
   const [currentPage, setCurrentPage] = useState(0); // Pour la pagination
@@ -72,7 +72,7 @@ const SetsComponent = () => {
           </div>
         </div>
       ) : (
-        <CardsComponent setId={selectedSet.id} setName={selectedSet.name} />
+        <CardsComponent setId={selectedSet.id} setName={selectedSet.name} onSelectCard={onSelectCard} />
       )}
     </div>
   );

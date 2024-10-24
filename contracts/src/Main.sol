@@ -13,21 +13,18 @@ contract Main is Ownable {
 
     mapping(uint => CollectionInfo) public collections;
     uint public collectionCount = 0;
+
+    mapping(uint => uint[]) public collectionCards;
+
     NFTCollection public nftContract;
 
     event CardMinted(uint collectionId, address to, uint cardNumber, string tokenURI);
 
-    constructor(address _owner) Ownable(msg.sender) {
+    constructor(address _owner, address nftCollectionAddress) Ownable() {
         require(_owner != address(0), "Owner address cannot be zero");
+        require(nftCollectionAddress != address(0), "NFT Collection address cannot be zero");
         transferOwnership(_owner);
-        nftContract = NFTCollection(msg.sender);
-    }
-
-
-    // Add the override specifier here
-    function transferOwnership(address newOwner) public override onlyOwner {
-        require(newOwner != address(0), "New owner is the zero address");
-        _transferOwnership(newOwner);
+        nftContract = NFTCollection(nftCollectionAddress); // Instancier le contrat NFTCollection avec l'adresse
     }
 
     function createCollection(string calldata name, uint cardCount) external onlyOwner {
@@ -54,12 +51,22 @@ contract Main is Ownable {
             uint cardNumber = cardNumbers[i];
             require(cardNumber >= 1 && cardNumber <= collection.cardCount, "Invalid card number");
 
-            nftContract.mintCard(to, collectionId, cardNumber, tokenURIs[i]);
+            // Mint la carte dans le contrat NFT
+            uint newTokenId = nftContract.mintCard(to, collectionId, cardNumber, tokenURIs[i]);
+
+            // Ajoute le tokenId à la collection correspondante
+            collectionCards[collectionId].push(newTokenId);
 
             collection.mintedCount++;
-            
-            // Emit the event for off-chain tracking
+
+            // Emit event pour tracking off-chain
             emit CardMinted(collectionId, to, cardNumber, tokenURIs[i]);
         }
+    }
+
+    // Fonction pour récupérer toutes les cartes associées à une collection (set)
+    function getCollectionCards(uint collectionId) external view returns (uint[] memory) {
+        require(collectionId < collectionCount, "Collection does not exist");
+        return collectionCards[collectionId];
     }
 }
