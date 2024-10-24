@@ -1,5 +1,3 @@
-// src/App.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useWallet } from './hooks/useWallet';
 import styles from './styles.module.css';
@@ -8,6 +6,7 @@ import MainABI from './abis/Main.json'; // Assurez-vous que le chemin est correc
 import { CreateCollectForm } from './components/CreateCollectForm';
 import { MintCardsForm } from './components/MintCardsForm';
 import { TransferOwnershipForm } from './components/TransferOwnershipForm';
+import SetsComponent from './components/SetsComponent'; // Importer le composant SetsComponent
 
 // Importer l'image du logo
 import logo from './assets/images/logo.png'; // Vérifiez le chemin
@@ -22,6 +21,8 @@ export const App = () => {
   const { account, balance, contract } = wallet || {};
   const [currentOwner, setCurrentOwner] = useState<string>('');
   const { ethereum } = window;
+  
+  const [showSets, setShowSets] = useState(false); // État pour afficher ou non les sets
 
   // Initialiser le contrat et récupérer le propriétaire
   useEffect(() => {
@@ -102,12 +103,14 @@ export const App = () => {
       <div className={styles.buttons}>
          <img src={logo} alt="Logo Pokémon TCG" className={styles.logo} />
         <button>Home</button>
-        <button>Sets</button>
+        <button onClick={() => setShowSets(!showSets)}>Sets</button> {/* Ajouter un bouton pour afficher/cacher les sets */}
         <button>Users</button>
         <button>Boosters</button>
       </div>
       <h1>Bienvenue dans Pokémon TCG</h1>
 
+      {/* Afficher les sets si showSets est vrai */}
+      {showSets && <SetsComponent />}
     </div>
   );
 }
