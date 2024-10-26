@@ -10,7 +10,7 @@ export const CreateCollectForm: React.FC<Props> = ({ contract }) => {
   const [cardCount, setCardCount] = useState<number>(0); // Nombre de cartes dans la collection
   const [minting, setMinting] = useState<boolean>(false); // Statut du minting
   const [error, setError] = useState<string | null>(null); // Pour afficher les erreurs
-
+  console.log('Contrat dans CreateCollec:', contract);
   const handleCreateCollection = async () => {
     setMinting(true);
     setError(null);

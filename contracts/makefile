@@ -1,3 +1,3 @@
 cp contracts
-npx hardhat clean
-npx hardhat compile
+yarn hardhat clean
+yarn hardhat compile

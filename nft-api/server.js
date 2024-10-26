@@ -1,45 +1,25 @@
+// server.js
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { ethers } = require('ethers');
-const NFTCollectionABI = require('./abis/NFTCollection.json');
+const pokemonRouter = require('./routes/pokemon');
 
 const app = express();
-const port = 3000;
 
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Configuration du fournisseur Ethereum
-const provider = new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID');
+// Routes
+app.use('/pokemon', pokemonRouter);
 
-// Adresse du contrat NFT
-const nftContractAddress = 'ADRESSE_DU_CONTRAT_NFT';
-
-// Instance du contrat
-const nftContract = new ethers.Contract(nftContractAddress, NFTCollectionABI, provider);
-
-// Fonction pour obtenir les métadonnées d'un NFT
-async function getNFTMetadata(tokenId) {
-  const cardInfo = await nftContract.cardInfos(tokenId);
-
-  return {
-    name: `Card #${cardInfo.cardNumber}`,
-    illustration: cardInfo.tokenURI || null,
-  };
-}
-
-// Route API pour obtenir les métadonnées d'un NFT
-app.get('/api/nft/:tokenId', async (req, res) => {
-  const tokenId = req.params.tokenId;
-
-  try {
-    const metadata = await getNFTMetadata(tokenId);
-    res.json(metadata);
-  } catch (error) {
-    console.error(`Erreur lors de la récupération des métadonnées pour le tokenId ${tokenId}`, error);
-    res.status(500).json({ error: 'Erreur lors de la récupération des métadonnées' });
-  }
+// Démarrer le serveur
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
 });
 
-app.listen(port, () => {
-  console.log(`Le serveur API NFT est en cours d'exécution sur http://localhost:${port}`);
+// Route de base
+app.get('/', (req, res) => {
+  res.send('Bienvenue sur l\'API Pokémon TCG');
 });

@@ -122,6 +122,9 @@ body {
   cursor: pointer;
 }
 
+.selectedCard {
+  border: 2px solid blue;
+}
 
 
 
