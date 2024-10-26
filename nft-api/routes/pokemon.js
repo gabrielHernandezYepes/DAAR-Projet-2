@@ -22,12 +22,12 @@ const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 // Instance du contrat
 const mainContract = new ethers.Contract(process.env.MAIN_CONTRACT_ADDRESS, MainABI.abi, wallet);
 
-console.log('MAIN_CONTRACT_ADDRESS:', process.env.MAIN_CONTRACT_ADDRESS);
-console.log('MAINABI:', MainABI.abi);
+//console.log('MAIN_CONTRACT_ADDRESS:', process.env.MAIN_CONTRACT_ADDRESS);
+//console.log('MAINABI:', MainABI.abi);
 //console.log('waller ', wallet);
-console.log('MAIN_CONTRACT_ADDRESS:', `"${process.env.MAIN_CONTRACT_ADDRESS}"`);
+//console.log('MAIN_CONTRACT_ADDRESS:', `"${process.env.MAIN_CONTRACT_ADDRESS}"`);
 
-console.log('Adresse du contrat Main:', mainContract.address);
+//console.log('Adresse du contrat Main:', mainContract.address);
 
 // Configuration de l'instance axios pour l'API Pokémon TCG
 const POKEMON_API_BASE_URL = process.env.POKEMON_API_BASE_URL;
