@@ -16,6 +16,7 @@ const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 // Instance du contrat
 const mainContract = new ethers.Contract(process.env.MAIN_CONTRACT_ADDRESS, MainABI.abi, wallet);
 
+console.log('Adresse du contrat Main:', mainContract.address);
 
 // Configuration de l'instance axios pour l'API Pokémon TCG
 const POKEMON_API_BASE_URL = process.env.POKEMON_API_BASE_URL;
@@ -97,12 +98,12 @@ router.post('/create-collection', async (req, res) => {
 
     console.log(`Création de la collection ${name} sur la blockchain...`);
 
-    // // Vérifier si la collection existe déjà
-    // const exists = await mainContract.collectionExists(name);
-    // if (exists) {
-    //   console.log(`La collection ${name} existe déjà sur la blockchain.`);
-    //   return res.status(400).json({ message: 'La collection existe déjà.' });
-    // }
+    // Vérifier si la collection existe déjà
+    const exists = await mainContract.collectionExists(name);
+    if (exists) {
+      console.log(`La collection ${name} existe déjà sur la blockchain.`);
+      return res.status(400).json({ message: 'La collection existe déjà.' });
+    }
 
     // Récupérer le set par nom
     const setResponse = await axiosInstance.get('/sets', {

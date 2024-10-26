@@ -4,9 +4,8 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NFTCollection is ERC721, Ownable {
+contract Collection is ERC721, Ownable {
     struct CardInfo {
-        string collectionId;
         uint cardNumber;
         string tokenURI;
     }
@@ -14,31 +13,31 @@ contract NFTCollection is ERC721, Ownable {
     // Mapping de tokenId vers les informations de la carte
     mapping(uint => CardInfo) public cardInfos;
 
-    // Mapping de tokenId vers l'owner
-    mapping(uint => address) public cardToOwner;
-
     // Mapping de owner vers la liste des cartes qu'il possède
     mapping(address => uint[]) public ownerToCards;
-
-    // Compteur pour les tokenIds
-    uint private _currentTokenId = 0;
-    event OwnerAdded(address indexed owner);
 
     // Liste de tous les propriétaires
     address[] private allOwners;
     mapping(address => bool) private ownerExists;
 
-    constructor(address ownerAddress) ERC721("MyNFTCollection", "MNFT") {
-        transferOwnership(ownerAddress);
+    // Compteur pour les tokenIds
+    uint private _currentTokenId = 0;
+
+    event OwnerAdded(address indexed owner);
+    string public collectionName;
+    uint256 public cardCount;
+
+    constructor(string memory name, uint _cardCount) ERC721(name, "MNFT") {
+        collectionName = name;
+        cardCount = _cardCount;
     }
 
     // Fonction pour frapper une carte
     function mintCard(
         address to,
-        string calldata collectionId,
         uint cardNumber,
         string memory tokenURI
-    ) public returns (uint) {
+    ) public onlyOwner returns (uint) {
         _currentTokenId++;
         uint newTokenId = _currentTokenId;
 
@@ -47,13 +46,11 @@ contract NFTCollection is ERC721, Ownable {
 
         // Stocke les informations de la carte
         cardInfos[newTokenId] = CardInfo({
-            collectionId: collectionId,
             cardNumber: cardNumber,
             tokenURI: tokenURI
         });
 
         // Mettre à jour les mappings pour suivre l'owner de la carte
-        cardToOwner[newTokenId] = to;
         ownerToCards[to].push(newTokenId);
 
         // Si le propriétaire est nouveau, l'ajouter à la liste
@@ -80,6 +77,4 @@ contract NFTCollection is ERC721, Ownable {
     function getAllOwners() external view returns (address[] memory) {
         return allOwners;
     }
-
-    
 }
