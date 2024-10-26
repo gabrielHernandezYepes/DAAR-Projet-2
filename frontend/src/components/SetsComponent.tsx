@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { usePokemonSets } from '../hooks/usePokemonSets';
 import { CardsComponent } from './CardsComponent';
 import styles from '../styles.module.css';
 
-interface SetsComponentProps {
-}
+interface SetsComponentProps {}
 
 const SetsComponent: React.FC<SetsComponentProps> = () => {
-  const { sets, loading, error } = usePokemonSets();
+  const [sets, setSets] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedSet, setSelectedSet] = useState<{ id: string; name: string } | null>(null);
-  const [currentPage, setCurrentPage] = useState(0); // Pour la pagination
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const setsPerPage = 4; // Nombre de sets par page
-  const totalPages = Math.ceil(sets.length / setsPerPage); // Nombre total de pages
+  const setsPerPage = 4;
+  const totalPages = Math.ceil(sets.length / setsPerPage);
 
-  // Gestion du clic sur un set pour afficher ses cartes
+  // Fonction pour récupérer les sets depuis le serveur
+  const fetchSets = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/pokemon/sets');
+      setSets(response.data.sets);
+      setLoading(false);
+    } catch (error) {
+      setError('Erreur lors de la récupération des sets.');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSets(); // Appel pour récupérer les sets au chargement du composant
+  }, []);
+
   const handleSetClick = async (set: {
     id: string;
     name: string;
@@ -24,16 +39,16 @@ const SetsComponent: React.FC<SetsComponentProps> = () => {
     total: number;
   }) => {
     try {
-        await axios.post('http://localhost:5000/pokemon/create-collection', {
-          name: set.name,
-        });
+      await axios.post('http://localhost:5000/pokemon/create-collection', {
+        name: set.name,
+      });
     } catch (error) {
       console.error('Erreur lors de la vérification ou de la création du set:', error);
     }
 
     setSelectedSet(set);
   };
-  
+
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages - 1));
   };
@@ -42,7 +57,6 @@ const SetsComponent: React.FC<SetsComponentProps> = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   };
 
-  // Récupérer les sets à afficher pour la page actuelle
   const displayedSets = sets.slice(currentPage * setsPerPage, (currentPage + 1) * setsPerPage);
 
   if (loading) return <p>Chargement des sets...</p>;
@@ -68,7 +82,6 @@ const SetsComponent: React.FC<SetsComponentProps> = () => {
             ))}
           </div>
 
-          {/* Boutons de pagination */}
           <div>
             <button onClick={handlePreviousPage} disabled={currentPage === 0}>
               Précédent

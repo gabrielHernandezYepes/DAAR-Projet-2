@@ -13,6 +13,9 @@ contract Collection is ERC721, Ownable {
     // Mapping de tokenId vers les informations de la carte
     mapping(uint => CardInfo) public cardInfos;
 
+    // Mapping de cardNumber vers l'existence de la carte pour empêcher la duplication
+    mapping(uint => bool) public cardExists;
+
     // Mapping de owner vers la liste des cartes qu'il possède
     mapping(address => uint[]) public ownerToCards;
 
@@ -38,6 +41,9 @@ contract Collection is ERC721, Ownable {
         uint cardNumber,
         string memory tokenURI
     ) public onlyOwner returns (uint) {
+        // Vérification si la carte avec ce cardNumber existe déjà
+        require(!cardExists[cardNumber], "Card with this number already exists");
+
         _currentTokenId++;
         uint newTokenId = _currentTokenId;
 
@@ -49,6 +55,9 @@ contract Collection is ERC721, Ownable {
             cardNumber: cardNumber,
             tokenURI: tokenURI
         });
+
+        // Marquer la carte comme existante pour ce numéro de carte
+        cardExists[cardNumber] = true;
 
         // Mettre à jour les mappings pour suivre l'owner de la carte
         ownerToCards[to].push(newTokenId);

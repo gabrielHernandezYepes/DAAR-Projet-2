@@ -32,18 +32,25 @@ export const CardsComponent: React.FC<Props> = ({ setId, setName }) => {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const response = await axios.get(`https://api.pokemontcg.io/v2/cards?q=set.id:${setId}`);
-        setCards(response.data.data);
+        // Remplacez ":id" par la valeur réelle de "setId"
+        console.log(setId);
+        const response = await axios.get(`http://localhost:5000/pokemon/sets/`+  setId );
+        console.log(response.data);
+        setCards(response.data.cards); // Correction du champ de la réponse
         setLoading(false);
       } catch (err) {
         setError((err as Error).message);
         setLoading(false);
       }
     };
-
-    fetchCards();
+  
+    if (setId) {
+      fetchCards(); // N'appelle fetchCards que si setId est défini
+    }
   }, [setId]);
+  
 
+   
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages - 1));
   };
