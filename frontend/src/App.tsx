@@ -14,23 +14,7 @@ export const App = () => {
   const [showSets, setShowSets] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
 
-  if (!ethereum) {
-    return (
-      <div className={styles.body}>
-        <h1>Bienvenue dans Pokémon TCG</h1>
-        <p>Veuillez installer MetaMask.</p>
-      </div>
-    );
-  }
 
-  if (!wallet) {
-    return (
-      <div className={styles.body}>
-        <h1>Bienvenue dans Pokémon TCG</h1>
-        <p>Veuillez connecter votre portefeuille.</p>
-      </div>
-    );
-  }
 
   return (
     <div 

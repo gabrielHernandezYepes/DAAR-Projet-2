@@ -5,11 +5,6 @@ import "./Collection.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Main is Ownable {
-    struct CollectionInfo {
-        string name;
-        uint cardCount;
-        uint mintedCount;
-    }
 
     struct UserCard {
         uint tokenId;
@@ -30,7 +25,7 @@ contract Main is Ownable {
     }
 
     function createCollection(string calldata name, uint cardCount) external onlyOwner {
-        require(!collectionExists(name), "Collection already exists");
+        //require(!collectionExists(name), "Collection already exists"); ça ser à r ???????
         Collection newCollection = new Collection(name, cardCount);
         collections[name] = newCollection;
         collectionIds.push(name); // Stocker le nom de la collection

@@ -42,28 +42,18 @@ router.get('/sets', async (req, res) => {
 });
 
 // Route pour obtenir les cartes d'un set par ID de set
-router.get('/sets/:setId/cards', async (req, res) => {
+router.get('/sets/:setId', async (req, res) => {
   try {
-    const { setId } = req.params;
-    const { page = 1, pageSize = 30 } = req.query;
-
-    const { data } = await axiosInstance.get('/cards', {
-      params: {
-        q: `set.id:${setId}`,
-        page,
-        pageSize,
-      },
-    });
+    const  {setId} = req.params;
+    console.log('ID du set:', setId);
+    // Requête simple avec uniquement setId correctement interpolé
+    const { data } = await axios.get('https://api.pokemontcg.io/v2/cards?q=set.id:'+setId);
 
     const cards = data.data;
-    const totalCount = data.totalCount;
-    const totalPages = Math.ceil(totalCount / pageSize);
-
+    console.log('Cartes du set:', cards);
+    // Retourner la liste des cartes pour le set donné
     res.status(200).json({
-      setId,
       cards,
-      totalPages,
-      currentPage: Number(page),
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des cartes du set:', error);
@@ -71,15 +61,15 @@ router.get('/sets/:setId/cards', async (req, res) => {
   }
 });
 
+
 // Route pour obtenir une carte par ID
 router.get('/cards/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
     const { data } = await axiosInstance.get(`/cards/${id}`);
-
+    
     const card = data.data;
-
+    
     if (!card) {
       return res.status(404).json({ message: 'Carte non trouvée.' });
     }
