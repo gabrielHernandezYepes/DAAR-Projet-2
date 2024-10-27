@@ -128,3 +128,56 @@ body {
 
 
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #2C3E50;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Pour que le header soit toujours au-dessus */
+}
+
+.logo {
+  width: 400px;
+  height: auto;
+}
+
+.navButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.navButtons button {
+  padding: 10px 20px;
+  background-color: #34495E;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navButtons button:hover {
+  background-color: #1ABC9C;
+}
+
+.navButtons button:focus {
+  outline: none;
+  background-color: #16A085;
+}
+
+.navButtons button.active {
+  background-color: #2980B9;
+}
+
+.title {
+  margin-top: 100px; /* Ajustez cette valeur selon l'espacement que vous souhaitez */
+  text-align: center;
+  font-size: 36px;
+  color: white;
+}

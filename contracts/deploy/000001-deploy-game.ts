@@ -14,8 +14,8 @@ const deployer: DeployFunction = async (hre) => {
   const mainDeployment = await deploy('Main', {
     from: deployerAddress,
     args: [deployerAddress], // Passer les deux arguments ici
-    log: true,
-  });
+    log: true, gasLimit: 6000000 
+  },);
 };
 
 export default deployer;
