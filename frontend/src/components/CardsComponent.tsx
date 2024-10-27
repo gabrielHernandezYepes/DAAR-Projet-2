@@ -32,11 +32,10 @@ export const CardsComponent: React.FC<Props> = ({ setId, setName }) => {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        // Remplacez ":id" par la valeur réelle de "setId"
         console.log(setId);
         const response = await axios.get(`http://localhost:5000/pokemon/sets/`+  setId );
         console.log(response.data);
-        setCards(response.data.cards); // Correction du champ de la réponse
+        setCards(response.data.cards); 
         setLoading(false);
       } catch (err) {
         setError((err as Error).message);
@@ -45,7 +44,7 @@ export const CardsComponent: React.FC<Props> = ({ setId, setName }) => {
     };
   
     if (setId) {
-      fetchCards(); // N'appelle fetchCards que si setId est défini
+      fetchCards(); 
     }
   }, [setId]);
   
@@ -95,15 +94,13 @@ export const CardsComponent: React.FC<Props> = ({ setId, setName }) => {
 
       // Appel au backend pour minter les cartes
       await axios.post('http://localhost:5000/pokemon/mint-cards', {
-        collectionId: setName, // Utiliser le nom du set comme identifiant de collection
+        collectionId: setName, 
         to: recipientAddress,
         cardNumbers: cardNumbers,
         tokenURIs: tokenURIs,
       });
 
       alert(`Cartes mintées avec succès pour ${recipientAddress}`);
-
-      // Réinitialiser la sélection après le mint
       setSelectedCardIds(new Set());
       setRecipientAddress('');
     } catch (err) {

@@ -22,14 +22,20 @@ export const App = () => {
     <div 
       className={`${styles.body} ${styles.background}`} 
       style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className={styles.buttons}>
-        <img src={logo} alt="Logo Pokémon TCG" className={styles.logo} />
-        <button onClick={() => { setShowSets(false); setShowUsers(false); setShowBoosters(false); }}>Home</button>
-        <button onClick={() => { setShowSets(!showSets); setShowUsers(false); setShowBoosters(false); }}>Sets</button>
-        <button onClick={() => { setShowUsers(!showUsers); setShowSets(false); setShowBoosters(false); }}>Users</button>
-        <button onClick={() => { setShowBoosters(!showBoosters); setShowSets(false); setShowUsers(false); }}>Boosters</button> {/* Bouton pour les boosters */}
-      </div>
-      <h1>Bienvenue dans Pokémon TCG</h1>
+
+<div className={styles.header}>
+  <img src={logo} alt="Logo Pokémon TCG" className={styles.logo} />
+  <div className={styles.navButtons}>
+    <button onClick={() => { setShowSets(false); setShowUsers(false); setShowBoosters(false); }}>Home</button>
+    <button onClick={() => { setShowSets(!showSets); setShowUsers(false); setShowBoosters(false); }}>Sets</button>
+    <button onClick={() => { setShowUsers(!showUsers); setShowSets(false); setShowBoosters(false); }}>Users</button>
+    <button onClick={() => { setShowBoosters(!showBoosters); setShowSets(false); setShowUsers(false); }}>Boosters</button>
+  </div>
+</div>
+
+
+     <h1 className={styles.title}>Bienvenue dans Pokémon TCG</h1>
+
 
       {showSets && <SetsComponent />}
       {showUsers && <UsersComponent />}
